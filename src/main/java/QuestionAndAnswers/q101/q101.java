@@ -1,0 +1,23 @@
+package QuestionAndAnswers.q101;
+
+public class q101 {
+    /*Given the content of /resourses/Message.properties:
+welcome1=”Good day!”
+and given the code fragment:
+Properties prop = new Properties ();
+FileInputStream fis = new FileInputStream (“/resources/Message.properties”);
+prop.load(fis);
+System.out.println(prop.getProperty(“welcome1”));
+System.out.println(prop.getProperty(“welcome2”, “Test”));//line n1
+System.out.println(prop.getProperty(“welcome3”));
+What is the result?
+A. Good day!
+Test
+followed by an Exception stack trace
+B. Good day!
+followed by an Exception stack trace
+C. Good day!///answer
+Test
+null
+D. A compilation error occurs at line n1*/
+}

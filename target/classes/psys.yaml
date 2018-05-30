@@ -1,0 +1,67 @@
+###########################################
+# 3 node docker compose: APP, DBS, AMQ
+#
+# make sure to set the correct ENV variables
+###########################################
+version: '2'
+services:
+
+
+#---------------------------
+# Initializer
+#---------------------------
+ init:
+    image: psbox/xjava8
+    volumes:
+      - ./artifacts:/mnt/
+    command: bash -c "sleep 5 && cd /mnt/$PROJ_NAME/WEB-INF/lib/ && java -jar initializer* psysjo*domain*.jar"
+    environment:
+      - PROJ_NAME=psysjo
+      - db_user=psysjo
+      - db_password=psysjo
+      - db_schema=psysjo
+      - db_type=ORACLE10
+      - db_driver=oracle.jdbc.OracleDriver
+      - db_url=jdbc:oracle:thin:@dbs:1521:XE
+      - db_validation_query=SELECT 1 FROM DUAL
+      - db_dialect=org.hibernate.dialect.Oracle10gDialect
+      - db_check_query=select count(*) from user_tables
+
+
+
+#---------------------------
+# Oracle Database
+#---------------------------
+  dbs:
+    image: oradb
+    # image: psbox/ora-cnts
+    shm_size: 1G
+    ports:
+      - 1521:1521
+
+
+
+#---------------------------
+# tomcat server
+#---------------------------
+  app:
+    image: tomcatjdkmq:latest
+    ports:
+      - 8080:8080
+      - 8443:8443
+    volumes:
+      - ./webapps:/usr/local/tomcat/webapps
+      - ./logs:/usr/local/tomcat/logs
+    depends_on:
+      - dbs
+    environment:
+      - PROJ_NAME=psysjo
+      - db_user=psysjo
+      - db_password=psysjo
+      - db_schema=psysjo
+      - db_type=ORACLE10
+      - db_driver=oracle.jdbc.OracleDriver
+      - db_url=jdbc:oracle:thin:@dbs:1521:XE
+      - db_validation_query=SELECT 1 FROM DUAL
+      - db_dialect=org.hibernate.dialect.Oracle10gDialect
+      - db_check_query=select count(*) from user_tables
